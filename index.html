@@ -1,472 +1,546 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#111827">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Protocole Santé</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #111827; color: white; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
-        .container { max-width: 480px; margin: 0 auto; padding: 16px; padding-bottom: 80px; }
-        .header { text-align: center; padding: 20px 0; }
-        .header h1 { font-size: 28px; font-weight: bold; background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .header p { color: #9ca3af; font-size: 14px; margin-top: 4px; }
-        .date-picker { background: #1f2937; color: white; padding: 8px 12px; border-radius: 8px; border: 1px solid #374151; width: 100%; max-width: 200px; font-size: 14px; }
-        .section { background: #1f2937; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 1px solid #374151; }
-        .section-title { font-size: 20px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-        .supplement-btn { width: 100%; padding: 16px; background: #374151; border: 2px solid transparent; border-radius: 8px; color: white; font-size: 15px; font-weight: 500; text-align: left; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; transition: all 0.2s; cursor: pointer; }
-        .supplement-btn:active { transform: scale(0.98); }
-        .supplement-btn.checked { background: rgba(34, 197, 94, 0.2); border-color: #22c55e; }
-        .supplement-btn.disabled { background: #374151; opacity: 0.5; cursor: not-allowed; }
-        .check-icon { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #9ca3af; display: flex; align-items: center; justify-content: center; }
-        .check-icon.checked { background: #22c55e; border-color: #22c55e; }
-        .wellbeing-section { background: linear-gradient(135deg, rgba(109, 40, 217, 0.3), rgba(59, 130, 246, 0.3)); border-color: #7c3aed; }
-        .slider-container { margin-bottom: 16px; }
-        .slider-label { color: #e5e7eb; font-weight: 500; margin-bottom: 8px; display: block; }
-        .slider-row { display: flex; align-items: center; gap: 12px; }
-        .slider { flex: 1; height: 8px; border-radius: 4px; appearance: none; outline: none; cursor: pointer; }
-        .slider::-webkit-slider-thumb { appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #a78bfa; cursor: pointer; }
-        .slider-value { font-size: 24px; font-weight: bold; color: #c4b5fd; min-width: 48px; text-align: center; }
-        .completion-box { background: #1f2937; border: 1px solid #374151; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 16px; }
-        .completion-value { font-size: 48px; font-weight: bold; color: #60a5fa; }
-        .completion-label { color: #9ca3af; margin-top: 8px; }
-        .week-chart { margin-top: 16px; }
-        .week-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-        .week-day { width: 60px; color: #9ca3af; font-weight: 500; font-size: 14px; }
-        .progress-bar { flex: 1; height: 32px; background: #374151; border-radius: 16px; overflow: hidden; position: relative; }
-        .progress-fill { height: 100%; transition: width 0.3s; }
-        .progress-fill.green { background: #22c55e; }
-        .progress-fill.yellow { background: #eab308; }
-        .progress-fill.red { background: #ef4444; }
-        .progress-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; color: white; }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 16px; }
-        .calendar-header { text-align: center; color: #9ca3af; font-size: 12px; font-weight: 500; padding: 8px 0; }
-        .calendar-day { aspect-ratio: 1; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; transition: transform 0.2s; border: none; color: white; }
-        .calendar-day:active { transform: scale(0.95); }
-        .calendar-day.empty { background: transparent; cursor: default; }
-        .calendar-day.high { background: #22c55e; }
-        .calendar-day.medium { background: #eab308; }
-        .calendar-day.low { background: #f97316; }
-        .calendar-day.none { background: #374151; }
-        .calendar-day.today { box-shadow: 0 0 0 2px #60a5fa; }
-        .calendar-day-num { font-size: 18px; }
-        .calendar-day-percent { font-size: 10px; margin-top: 2px; }
-        .legend { margin-top: 20px; }
-        .legend-item { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-        .legend-color { width: 32px; height: 32px; border-radius: 4px; }
-        .legend-text { color: #d1d5db; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #1f2937; border-top: 1px solid #374151; display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; }
-        .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 24px; background: transparent; border: none; border-radius: 8px; color: #9ca3af; cursor: pointer; transition: all 0.2s; }
-        .nav-btn.active { color: #60a5fa; background: rgba(59, 130, 246, 0.2); }
-        .nav-icon { width: 24px; height: 24px; }
-        .nav-label { font-size: 12px; font-weight: 500; }
-        .view { display: none; }
-        .view.active { display: block; }
-        .flex-between { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .month-title { text-align: center; font-size: 20px; color: #d1d5db; text-transform: capitalize; margin-bottom: 16px; }
-        .avg-score-section { background: #1f2937; border: 1px solid #374151; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
-        .score-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .score-label { color: #e5e7eb; font-weight: 500; }
-        .score-bar-container { display: flex; align-items: center; gap: 8px; }
-        .score-bar { width: 128px; height: 12px; background: #374151; border-radius: 6px; overflow: hidden; }
-        .score-bar-fill { height: 100%; background: #a78bfa; transition: width 0.3s; }
-        .score-number { color: #c4b5fd; font-weight: bold; min-width: 32px; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>💊 Protocole Santé</h1>
-            <p>Suivi de supplémentation</p>
-        </div>
-        
-        <div id="dailyView" class="view active">
-            <div class="flex-between">
-                <h2 style="font-size: 24px; font-weight: bold;">Protocole Quotidien</h2>
-                <input type="date" id="dateInput" class="date-picker">
-            </div>
-            
-            <div class="section">
-                <div class="section-title">🌅 Matin</div>
-                <div id="matinSupplements"></div>
-            </div>
-            
-            <div class="section">
-                <div class="section-title">☀️ Midi</div>
-                <div id="midiSupplements"></div>
-            </div>
-            
-            <div class="section">
-                <div class="section-title">🌙 Soir</div>
-                <div id="soirSupplements"></div>
-            </div>
-            
-            <div class="section wellbeing-section">
-                <div class="section-title">💫 Bien-être du jour</div>
-                <div class="slider-container">
-                    <label class="slider-label">Énergie</label>
-                    <div class="slider-row">
-                        <input type="range" min="0" max="10" value="5" class="slider" id="energieSlider">
-                        <span class="slider-value" id="energieValue">5</span>
-                    </div>
-                </div>
-                <div class="slider-container">
-                    <label class="slider-label">Immunité</label>
-                    <div class="slider-row">
-                        <input type="range" min="0" max="10" value="5" class="slider" id="immuniteSlider">
-                        <span class="slider-value" id="immuniteValue">5</span>
-                    </div>
-                </div>
-                <div class="slider-container">
-                    <label class="slider-label">Stress</label>
-                    <div class="slider-row">
-                        <input type="range" min="0" max="10" value="5" class="slider" id="stressSlider">
-                        <span class="slider-value" id="stressValue">5</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="completion-box">
-                <div class="completion-value" id="dailyCompletion">0%</div>
-                <div class="completion-label">Protocole complété aujourd'hui</div>
-            </div>
-        </div>
-        
-        <div id="weeklyView" class="view">
-            <h2 style="font-size: 24px; font-weight: bold; margin-bottom: 16px;">📊 Analyse Hebdomadaire</h2>
-            
-            <div class="section" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(59, 130, 246, 0.3)); border-color: #22c55e;">
-                <div style="text-align: center;">
-                    <div style="font-size: 56px; font-weight: bold; color: #22c55e; margin-bottom: 8px;" id="weeklyAvg">0%</div>
-                    <div style="color: #d1d5db; font-size: 18px;">Conformité moyenne cette semaine</div>
-                </div>
-            </div>
-            
-            <div class="section">
-                <div class="section-title" style="color: #60a5fa;">Suivi quotidien</div>
-                <div class="week-chart" id="weekChart"></div>
-            </div>
-            
-            <div class="avg-score-section">
-                <div class="section-title" style="color: #a78bfa;">Bien-être moyen</div>
-                <div id="avgScores"></div>
-            </div>
-        </div>
-        
-        <div id="monthlyView" class="view">
-            <h2 style="font-size: 24px; font-weight: bold; margin-bottom: 16px;">📅 Vue Mensuelle</h2>
-            <div class="month-title" id="monthTitle"></div>
-            
-            <div class="section">
-                <div class="calendar-grid">
-                    <div class="calendar-header">Dim</div>
-                    <div class="calendar-header">Lun</div>
-                    <div class="calendar-header">Mar</div>
-                    <div class="calendar-header">Mer</div>
-                    <div class="calendar-header">Jeu</div>
-                    <div class="calendar-header">Ven</div>
-                    <div class="calendar-header">Sam</div>
-                </div>
-                <div class="calendar-grid" id="calendarGrid"></div>
-            </div>
-            
-            <div class="section">
-                <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 12px;">Légende</h3>
-                <div class="legend">
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: #22c55e;"></div>
-                        <span class="legend-text">80-100% complété</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: #eab308;"></div>
-                        <span class="legend-text">50-79% complété</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: #f97316;"></div>
-                        <span class="legend-text">1-49% complété</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: #374151;"></div>
-                        <span class="legend-text">Non commencé</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="bottom-nav">
-        <button class="nav-btn active" onclick="switchView('daily')">
-            <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            <span class="nav-label">Quotidien</span>
-        </button>
-        <button class="nav-btn" onclick="switchView('weekly')">
-            <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
-            <span class="nav-label">Semaine</span>
-        </button>
-        <button class="nav-btn" onclick="switchView('monthly')">
-            <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
-            <span class="nav-label">Mois</span>
-        </button>
-    </div>
+import React, { useState, useEffect } from 'react';
+import { Clock, CheckCircle2, Circle, TrendingUp, Calendar, BookOpen, Settings, Mic, Download, Bell, Info } from 'lucide-react';
 
-    <script>
-        const protocol = {
-            matin: ['Bleu de Méthylène', 'Sel Celtique', 'Complexe B', 'Moringa/Alfalfa', 'Optiflora', 'Vita-D3 + Lécithine'],
-            midi: ['Gouttes Folate B9/B12', 'Créatine (3-5g)', 'Collagène', 'Curcuma/Gingembre'],
-            soir: ['Synermag (coucher)', 'Ashwagandha (dîner)', 'Zinc (dîner)']
-        };
-        
-        let dailyData = JSON.parse(localStorage.getItem('supplementData') || '{}');
-        let wellbeingScores = JSON.parse(localStorage.getItem('wellbeingScores') || '{}');
-        let currentDate = new Date().toISOString().split('T')[0];
-        
-        function saveData() {
-            localStorage.setItem('supplementData', JSON.stringify(dailyData));
-            localStorage.setItem('wellbeingScores', JSON.stringify(wellbeingScores));
-        }
-        
-        function isAshwagandhaRestDay(date) {
-            const day = new Date(date).getDate();
-            return day % 7 === 0 || day % 7 === 1;
-        }
-        
-        function toggleSupplement(moment, supplement) {
-            const key = `${currentDate}-${moment}-${supplement}`;
-            dailyData[key] = !dailyData[key];
-            saveData();
-            renderDaily();
-            updateDailyCompletion();
-        }
-        
-        function renderDaily() {
-            ['matin', 'midi', 'soir'].forEach(moment => {
-                const container = document.getElementById(`${moment}Supplements`);
-                container.innerHTML = '';
-                
-                protocol[moment].forEach(supp => {
-                    const isAshwa = supp.includes('Ashwagandha');
-                    const isRestDay = isAshwa && isAshwagandhaRestDay(currentDate);
-                    const key = `${currentDate}-${moment}-${supp}`;
-                    const isChecked = dailyData[key];
-                    
-                    const btn = document.createElement('button');
-                    btn.className = `supplement-btn ${isChecked ? 'checked' : ''} ${isRestDay ? 'disabled' : ''}`;
-                    btn.disabled = isRestDay;
-                    btn.onclick = () => !isRestDay && toggleSupplement(moment, supp);
-                    
-                    btn.innerHTML = `
-                        <span>${supp}${isRestDay ? ' <span style="color: #fb923c; font-size: 12px;">(Repos)</span>' : ''}</span>
-                        <div class="check-icon ${isChecked ? 'checked' : ''}">
-                            ${isChecked ? '✓' : ''}
-                        </div>
-                    `;
-                    
-                    container.appendChild(btn);
-                });
-            });
-        }
-        
-        function getDayCompletion(date) {
-            let total = 0, completed = 0;
-            
-            Object.keys(protocol).forEach(moment => {
-                protocol[moment].forEach(supp => {
-                    if (supp.includes('Ashwagandha') && isAshwagandhaRestDay(date)) return;
-                    total++;
-                    const key = `${date}-${moment}-${supp}`;
-                    if (dailyData[key]) completed++;
-                });
-            });
-            
-            return total > 0 ? Math.round((completed / total) * 100) : 0;
-        }
-        
-        function updateDailyCompletion() {
-            document.getElementById('dailyCompletion').textContent = getDayCompletion(currentDate) + '%';
-        }
-        
-        function renderWeekly() {
-            const today = new Date(currentDate);
-            const weekData = [];
-            
-            for (let i = 6; i >= 0; i--) {
-                const date = new Date(today);
-                date.setDate(date.getDate() - i);
-                const dateStr = date.toISOString().split('T')[0];
-                weekData.push({
-                    date: dateStr,
-                    day: date.toLocaleDateString('fr-FR', { weekday: 'short' }),
-                    completion: getDayCompletion(dateStr)
-                });
-            }
-            
-            const avgCompletion = Math.round(weekData.reduce((sum, d) => sum + d.completion, 0) / weekData.length);
-            document.getElementById('weeklyAvg').textContent = avgCompletion + '%';
-            
-            const chartContainer = document.getElementById('weekChart');
-            chartContainer.innerHTML = '';
-            
-            weekData.forEach(day => {
-                const row = document.createElement('div');
-                row.className = 'week-row';
-                const color = day.completion >= 80 ? 'green' : day.completion >= 50 ? 'yellow' : 'red';
-                
-                row.innerHTML = `
-                    <div class="week-day">${day.day}</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill ${color}" style="width: ${day.completion}%"></div>
-                        <div class="progress-text">${day.completion}%</div>
+const ProtocolEssentialPlusApp = () => {
+  const [currentView, setCurrentView] = useState('daily');
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [dailyData, setDailyData] = useState({});
+  const [wellbeingScores, setWellbeingScores] = useState({});
+  const [voiceNotes, setVoiceNotes] = useState({});
+  const [selectedSupplement, setSelectedSupplement] = useState(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [notificationTimes, setNotificationTimes] = useState({
+    matin: '08:00',
+    midi: '12:00',
+    soir: '20:00'
+  });
+
+  const protocol = {
+    matin: [
+      { 
+        name: 'Bleu de Méthylène', 
+        dosage: '5 gouttes',
+        reminder: 'À jeun, dilué dans un verre d\'eau'
+      },
+      { 
+        name: 'Complexe B', 
+        dosage: '1 capsule',
+        reminder: 'Avec le petit-déjeuner pour meilleure absorption'
+      },
+      { 
+        name: 'Vita-D3', 
+        dosage: '1 capsule',
+        reminder: 'Avec un repas contenant des graisses'
+      }
+    ],
+    midi: [
+      { 
+        name: 'Curcuma', 
+        dosage: '500mg',
+        reminder: 'Avec poivre noir pour biodisponibilité'
+      },
+      { 
+        name: 'Gingembre', 
+        dosage: '250mg',
+        reminder: 'Pendant ou après le repas'
+      }
+    ],
+    soir: [
+      { 
+        name: 'Ashwagandha', 
+        dosage: '300mg',
+        reminder: 'Au dîner (3 semaines ON / 1 semaine OFF)'
+      },
+      { 
+        name: 'Zinc', 
+        dosage: '15mg',
+        reminder: 'Au dîner, pas avec calcium'
+      },
+      { 
+        name: 'Synermag/Magnésium', 
+        dosage: '200mg',
+        reminder: 'Au coucher pour favoriser le sommeil'
+      }
+    ]
+  };
+
+  const supplementGuide = {
+    'Bleu de Méthylène': {
+      avantages: 'Améliore fonction mitochondriale, neuroprotecteur, antioxydant puissant',
+      inconvenients: 'Coloration urine/selles, interactions médicamenteuses, éviter si G6PD',
+      mecanisme: 'Améliore la production d\'énergie cellulaire en optimisant la chaîne respiratoire',
+      synergies: 'Fonctionne bien avec NAD+ et CoQ10'
+    },
+    'Complexe B': {
+      avantages: 'Énergie, métabolisme, fonction cognitive, humeur',
+      inconvenients: 'Urine jaune fluo, possible nausée à jeun',
+      mecanisme: 'Cofacteurs essentiels pour production d\'énergie et neurotransmetteurs',
+      synergies: 'Magnésium pour activation optimale'
+    },
+    'Vita-D3': {
+      avantages: 'Immunité, os, humeur, fonction musculaire',
+      inconvenients: 'Toxicité si surdosage, calcification si K2 absent',
+      mecanisme: 'Hormone stéroïde qui régule 3000+ gènes',
+      synergies: 'ESSENTIEL avec K2 et graisses alimentaires'
+    },
+    'Curcuma': {
+      avantages: 'Anti-inflammatoire puissant, antioxydant, neuroprotecteur',
+      inconvenients: 'Biodisponibilité faible seul, possible trouble gastrique',
+      mecanisme: 'Inhibe NF-kB et autres voies inflammatoires',
+      synergies: 'Poivre noir (×2000 absorption) et gingembre'
+    },
+    'Gingembre': {
+      avantages: 'Anti-nausée, anti-inflammatoire, digestion',
+      inconvenients: 'Peut fluidifier sang, éviter avant chirurgie',
+      mecanisme: 'Composés gingérols inhibent inflammation',
+      synergies: 'Curcuma et citron pour effet synergique'
+    },
+    'Ashwagandha': {
+      avantages: 'Adaptogène anti-stress, cortisol, sommeil, force',
+      inconvenients: 'Cycle requis (désensibilisation), somnolence possible',
+      mecanisme: 'Régule axe HPA et récepteurs GABA',
+      synergies: 'Magnésium et Rhodiola pour gestion stress'
+    },
+    'Zinc': {
+      avantages: 'Immunité, testostérone, cicatrisation, 300+ enzymes',
+      inconvenients: 'Nausée si estomac vide, bloque cuivre si excès',
+      mecanisme: 'Cofacteur enzymatique et régulateur immunitaire',
+      synergies: 'Vitamine C, éviter calcium simultané'
+    },
+    'Synermag/Magnésium': {
+      avantages: 'Sommeil, relaxation musculaire, 600+ réactions enzymatiques',
+      inconvenients: 'Effet laxatif selon forme, interagit avec antibiotiques',
+      mecanisme: 'Antagoniste calcium, active GABA, détend système nerveux',
+      synergies: 'Vitamine B6 et D3 pour absorption optimale'
+    }
+  };
+
+  useEffect(() => {
+    const saved = localStorage.getItem('protocolData');
+    const savedScores = localStorage.getItem('wellbeingScores');
+    const savedNotes = localStorage.getItem('voiceNotes');
+    const savedTimes = localStorage.getItem('notificationTimes');
+    
+    if (saved) setDailyData(JSON.parse(saved));
+    if (savedScores) setWellbeingScores(JSON.parse(savedScores));
+    if (savedNotes) setVoiceNotes(JSON.parse(savedNotes));
+    if (savedTimes) setNotificationTimes(JSON.parse(savedTimes));
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('protocolData', JSON.stringify(dailyData));
+  }, [dailyData]);
+
+  useEffect(() => {
+    localStorage.setItem('wellbeingScores', JSON.stringify(wellbeingScores));
+  }, [wellbeingScores]);
+
+  useEffect(() => {
+    localStorage.setItem('voiceNotes', JSON.stringify(voiceNotes));
+  }, [voiceNotes]);
+
+  useEffect(() => {
+    localStorage.setItem('notificationTimes', JSON.stringify(notificationTimes));
+  }, [notificationTimes]);
+
+  const isAshwagandhaRestWeek = (date) => {
+    const weekOfYear = Math.floor((new Date(date) - new Date(new Date(date).getFullYear(), 0, 1)) / 604800000);
+    return weekOfYear % 4 === 3;
+  };
+
+  const toggleSupplement = (moment, supplement) => {
+    const key = `${selectedDate}-${moment}-${supplement}`;
+    setDailyData(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
+  };
+
+  const startVoiceRecording = (moment) => {
+    if (!('webkitSpeechRecognition' in window)) {
+      alert('Désolé, votre navigateur ne supporte pas la reconnaissance vocale');
+      return;
+    }
+
+    const recognition = new window.webkitSpeechRecognition();
+    recognition.lang = 'fr-FR';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onstart = () => setIsRecording(true);
+    
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      const key = `${selectedDate}-${moment}`;
+      setVoiceNotes(prev => ({
+        ...prev,
+        [key]: (prev[key] || '') + ' ' + transcript
+      }));
+      setIsRecording(false);
+    };
+
+    recognition.onerror = () => {
+      setIsRecording(false);
+      alert('Erreur d\'enregistrement vocal');
+    };
+
+    recognition.onend = () => setIsRecording(false);
+
+    recognition.start();
+  };
+
+  const updateWellbeingScore = (moment, category, value) => {
+    const key = `${selectedDate}-${moment}`;
+    setWellbeingScores(prev => ({
+      ...prev,
+      [key]: {
+        ...prev[key],
+        [category]: parseInt(value)
+      }
+    }));
+  };
+
+  const getDayCompletion = (date) => {
+    let total = 0;
+    let completed = 0;
+    
+    Object.keys(protocol).forEach(moment => {
+      protocol[moment].forEach(supp => {
+        if (supp.name === 'Ashwagandha' && isAshwagandhaRestWeek(date)) return;
+        total++;
+        const key = `${date}-${moment}-${supp.name}`;
+        if (dailyData[key]) completed++;
+      });
+    });
+    
+    return total > 0 ? Math.round((completed / total) * 100) : 0;
+  };
+
+  const exportToExcel = () => {
+    let csvContent = "Date,Moment,Supplément,Pris,Énergie,Immunité,Stress,Notes Vocales\n";
+    
+    const dates = Object.keys(dailyData).map(k => k.split('-').slice(0, 3).join('-'));
+    const uniqueDates = [...new Set(dates)].sort();
+    
+    uniqueDates.forEach(date => {
+      Object.keys(protocol).forEach(moment => {
+        protocol[moment].forEach(supp => {
+          const key = `${date}-${moment}-${supp.name}`;
+          const taken = dailyData[key] ? 'Oui' : 'Non';
+          const scores = wellbeingScores[`${date}-${moment}`] || {};
+          const note = voiceNotes[`${date}-${moment}`] || '';
+          
+          csvContent += `${date},${moment},${supp.name},${taken},${scores.Énergie || ''},${scores.Immunité || ''},${scores.Stress || ''},"${note.replace(/"/g, '""')}"\n`;
+        });
+      });
+    });
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `protocole_essentiel_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+  };
+
+  const DailyView = () => (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-2xl font-bold text-gray-100">Suivi Quotidien</h2>
+        <input
+          type="date"
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+          className="bg-gray-800 text-gray-100 px-3 py-2 rounded-lg border border-gray-700"
+        />
+      </div>
+
+      {Object.entries(protocol).map(([moment, supplements]) => (
+        <div key={moment} className="bg-gray-800 rounded-xl p-4 border border-gray-700">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xl font-semibold text-blue-400 capitalize flex items-center gap-2">
+              {moment === 'matin' ? '🌅' : moment === 'midi' ? '☀️' : '🌙'} {moment}
+              <Bell size={18} className="text-gray-400" />
+              <span className="text-sm text-gray-400">{notificationTimes[moment]}</span>
+            </h3>
+            <button
+              onClick={() => startVoiceRecording(moment)}
+              className={`p-2 rounded-full ${isRecording ? 'bg-red-600 animate-pulse' : 'bg-purple-600'}`}
+            >
+              <Mic size={20} className="text-white" />
+            </button>
+          </div>
+
+          {supplements.map(supp => {
+            const isAshwa = supp.name === 'Ashwagandha';
+            const isRestWeek = isAshwa && isAshwagandhaRestWeek(selectedDate);
+            const key = `${selectedDate}-${moment}-${supp.name}`;
+            const isChecked = dailyData[key];
+
+            return (
+              <div key={supp.name} className="mb-3">
+                <button
+                  onClick={() => !isRestWeek && toggleSupplement(moment, supp.name)}
+                  disabled={isRestWeek}
+                  className={`w-full flex items-center justify-between p-3 rounded-lg transition-all ${
+                    isRestWeek
+                      ? 'bg-gray-700 opacity-50 cursor-not-allowed'
+                      : isChecked
+                      ? 'bg-green-900/50 border-2 border-green-500'
+                      : 'bg-gray-700 hover:bg-gray-600 border-2 border-transparent'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    {isChecked ? <CheckCircle2 className="text-green-400" size={24} /> : <Circle className="text-gray-400" size={24} />}
+                    <div className="text-left">
+                      <div className="font-medium text-gray-100">{supp.name}</div>
+                      <div className="text-xs text-gray-400">{supp.dosage}</div>
                     </div>
-                `;
-                
-                chartContainer.appendChild(row);
-            });
-            
-            const avgScores = {};
-            ['Énergie', 'Immunité', 'Stress'].forEach(cat => {
-                const scores = weekData
-                    .map(d => wellbeingScores[d.date]?.[cat])
-                    .filter(s => s !== undefined);
-                avgScores[cat] = scores.length > 0
-                    ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
-                    : 0;
-            });
-            
-            const scoresContainer = document.getElementById('avgScores');
-            scoresContainer.innerHTML = '';
-            
-            Object.entries(avgScores).forEach(([cat, score]) => {
-                const item = document.createElement('div');
-                item.className = 'score-item';
-                item.innerHTML = `
-                    <span class="score-label">${cat}</span>
-                    <div class="score-bar-container">
-                        <div class="score-bar">
-                            <div class="score-bar-fill" style="width: ${score * 10}%"></div>
-                        </div>
-                        <span class="score-number">${score}</span>
-                    </div>
-                `;
-                scoresContainer.appendChild(item);
-            });
-        }
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedSupplement(supp);
+                    }}
+                    className="p-2 bg-blue-600 rounded-full hover:bg-blue-500"
+                  >
+                    <Info size={16} />
+                  </button>
+                </button>
+                {isRestWeek && <p className="text-xs text-orange-400 mt-1 ml-3">Semaine de repos</p>}
+              </div>
+            );
+          })}
+
+          {voiceNotes[`${selectedDate}-${moment}`] && (
+            <div className="mt-3 p-3 bg-purple-900/30 rounded-lg border border-purple-700">
+              <p className="text-sm text-purple-200">
+                🎤 {voiceNotes[`${selectedDate}-${moment}`]}
+              </p>
+            </div>
+          )}
+
+          <div className="mt-4 space-y-2">
+            <p className="text-sm font-semibold text-gray-300">Bien-être {moment}</p>
+            {['Énergie', 'Immunité', 'Stress'].map(cat => (
+              <div key={cat} className="flex items-center gap-2">
+                <span className="text-xs text-gray-400 w-20">{cat}</span>
+                <input
+                  type="range"
+                  min="0"
+                  max="10"
+                  value={wellbeingScores[`${selectedDate}-${moment}`]?.[cat] || 5}
+                  onChange={(e) => updateWellbeingScore(moment, cat, e.target.value)}
+                  className="flex-1 h-2 bg-gray-700 rounded-lg"
+                />
+                <span className="text-sm font-bold text-blue-400 w-8">
+                  {wellbeingScores[`${selectedDate}-${moment}`]?.[cat] || 5}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+
+      <div className="bg-gray-800 rounded-xl p-5 border border-gray-700 text-center">
+        <div className="text-5xl font-bold text-blue-400 mb-2">
+          {getDayCompletion(selectedDate)}%
+        </div>
+        <div className="text-gray-400">Protocole complété</div>
+      </div>
+
+      {selectedSupplement && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onClick={() => setSelectedSupplement(null)}>
+          <div className="bg-gray-800 rounded-xl p-6 max-w-md w-full border border-gray-700" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-xl font-bold text-blue-400 mb-3">{selectedSupplement.name}</h3>
+            <div className="space-y-3 text-sm">
+              <div>
+                <p className="font-semibold text-green-400">📦 Dosage</p>
+                <p className="text-gray-300">{selectedSupplement.dosage}</p>
+              </div>
+              <div>
+                <p className="font-semibold text-yellow-400">💡 Rappel</p>
+                <p className="text-gray-300">{selectedSupplement.reminder}</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setSelectedSupplement(null)}
+              className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg font-semibold"
+            >
+              Fermer
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  const AnalysisView = () => {
+    const getWeekData = () => {
+      const weekData = [];
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date(selectedDate);
+        date.setDate(date.getDate() - i);
+        const dateStr = date.toISOString().split('T')[0];
+        weekData.push({
+          date: dateStr,
+          day: date.toLocaleDateString('fr-FR', { weekday: 'short' }),
+          completion: getDayCompletion(dateStr)
+        });
+      }
+      return weekData;
+    };
+
+    const weekData = getWeekData();
+    const avgCompletion = Math.round(weekData.reduce((sum, d) => sum + d.completion, 0) / weekData.length);
+
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-gray-100">Analyse</h2>
+          <button
+            onClick={exportToExcel}
+            className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg font-semibold"
+          >
+            <Download size={20} />
+            Export Excel
+          </button>
+        </div>
+
+        <div className="bg-gradient-to-br from-green-900/50 to-blue-900/50 rounded-xl p-6 border border-green-700">
+          <div className="text-center">
+            <div className="text-6xl font-bold text-green-400 mb-2">{avgCompletion}%</div>
+            <div className="text-gray-300 text-lg">Conformité Hebdomadaire</div>
+          </div>
+        </div>
+
+        <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
+          <h3 className="text-xl font-semibold text-blue-400 mb-4">7 Derniers Jours</h3>
+          <div className="space-y-3">
+            {weekData.map(day => (
+              <div key={day.date} className="flex items-center gap-4">
+                <div className="w-12 text-gray-400 text-sm">{day.day}</div>
+                <div className="flex-1 bg-gray-700 rounded-full h-8 overflow-hidden relative">
+                  <div
+                    className={`h-full transition-all ${
+                      day.completion >= 80 ? 'bg-green-500' : day.completion >= 50 ? 'bg-yellow-500' : 'bg-red-500'
+                    }`}
+                    style={{ width: `${day.completion}%` }}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center text-sm font-bold text-white">
+                    {day.completion}%
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const GuideView = () => (
+    <div className="space-y-4">
+      <h2 className="text-2xl font-bold text-gray-100 mb-4">Guide Détaillé</h2>
+      {Object.entries(supplementGuide).map(([name, info]) => (
+        <div key={name} className="bg-gray-800 rounded-xl p-5 border border-gray-700">
+          <h3 className="text-xl font-bold text-blue-400 mb-3">{name}</h3>
+          <div className="space-y-3 text-sm">
+            <div>
+              <p className="font-semibold text-green-400 mb-1">✅ Avantages</p>
+              <p className="text-gray-300">{info.avantages}</p>
+            </div>
+            <div>
+              <p className="font-semibold text-red-400 mb-1">⚠️ Inconvénients</p>
+              <p className="text-gray-300">{info.inconvenients}</p>
+            </div>
+            <div>
+              <p className="font-semibold text-purple-400 mb-1">🔬 Mécanisme</p>
+              <p className="text-gray-300">{info.mecanisme}</p>
+            </div>
+            <div>
+              <p className="font-semibold text-yellow-400 mb-1">🤝 Synergies</p>
+              <p className="text-gray-300">{info.synergies}</p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  const SettingsView = () => (
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold text-gray-100 mb-4">Paramètres</h2>
+      
+      <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
+        <h3 className="text-xl font-semibold text-blue-400 mb-4">⏰ Heures de Notification</h3>
         
-        function renderMonthly() {
-            const today = new Date(currentDate);
-            const year = today.getFullYear();
-            const month = today.getMonth();
-            
-            document.getElementById('monthTitle').textContent = today.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
-            
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
-            const daysInMonth = lastDay.getDate();
-            const startingDayOfWeek = firstDay.getDay();
-            
-            const grid = document.getElementById('calendarGrid');
-            grid.innerHTML = '';
-            
-            for (let i = 0; i < startingDayOfWeek; i++) {
-                const empty = document.createElement('div');
-                empty.className = 'calendar-day empty';
-                grid.appendChild(empty);
-            }
-            
-            const todayStr = new Date().toISOString().split('T')[0];
-            
-            for (let day = 1; day <= daysInMonth; day++) {
-                const date = new Date(year, month, day);
-                const dateStr = date.toISOString().split('T')[0];
-                const completion = getDayCompletion(dateStr);
-                
-                const btn = document.createElement('button');
-                btn.className = 'calendar-day';
-                if (completion >= 80) btn.classList.add('high');
-                else if (completion >= 50) btn.classList.add('medium');
-                else if (completion > 0) btn.classList.add('low');
-                else btn.classList.add('none');
-                
-                if (dateStr === todayStr) btn.classList.add('today');
-                
-                btn.onclick = () => {
-                    currentDate = dateStr;
-                    document.getElementById('dateInput').value = dateStr;
-                    switchView('daily');
-                };
-                
-                btn.innerHTML = `
-                    <div class="calendar-day-num">${day}</div>
-                    ${completion > 0 ? `<div class="calendar-day-percent">${completion}%</div>` : ''}
-                `;
-                
-                grid.appendChild(btn);
-            }
-        }
-        
-        function switchView(view) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            
-            document.getElementById(`${view}View`).classList.add('active');
-            event.currentTarget.classList.add('active');
-            
-            if (view === 'weekly') renderWeekly();
-            if (view === 'monthly') renderMonthly();
-        }
-        
-        function updateSliderValue(sliderId, valueId) {
-            const slider = document.getElementById(sliderId);
-            const value = document.getElementById(valueId);
-            const category = sliderId.replace('Slider', '');
-            const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
-            
-            slider.oninput = function() {
-                value.textContent = this.value;
-                
-                if (!wellbeingScores[currentDate]) {
-                    wellbeingScores[currentDate] = {};
-                }
-                wellbeingScores[currentDate][categoryName] = parseInt(this.value);
-                saveData();
-                
-                const percent = (this.value / 10) * 100;
-                this.style.background = `linear-gradient(to right, #a78bfa 0%, #a78bfa ${percent}%, #374151 ${percent}%, #374151 100%)`;
-            };
-            
-            const savedValue = wellbeingScores[currentDate]?.[categoryName] || 5;
-            slider.value = savedValue;
-            value.textContent = savedValue;
-            const percent = (savedValue / 10) * 100;
-            slider.style.background = `linear-gradient(to right, #a78bfa 0%, #a78bfa ${percent}%, #374151 ${percent}%, #374151 100%)`;
-        }
-        
-        document.getElementById('dateInput').value = currentDate;
-        document.getElementById('dateInput').onchange = function() {
-            currentDate = this.value;
-            renderDaily();
-            updateDailyCompletion();
-            
-            ['energie', 'immunite', 'stress'].forEach(cat => {
-                const slider = document.getElementById(`${cat}Slider`);
-                const value = document.getElementById(`${cat}Value`);
-                const categoryName = cat.charAt(0).toUpperCase() + cat.slice(1);
-                const savedValue = wellbeingScores[currentDate]?.[categoryName] || 5;
-                slider.value = savedValue;
-                value.textContent = savedValue;
-                const percent = (savedValue / 10) * 100;
-                slider.style.background = `linear-gradient(to right, #a78bfa 0%, #a78bfa ${percent}%, #374151 ${percent}%, #374151 100%)`;
-            });
-        };
-        
-        updateSliderValue('energieSlider', 'energieValue');
-        updateSliderValue('immuniteSlider', 'immuniteValue');
-        updateSliderValue('stressSlider', 'stressValue');
-        
-        renderDaily();
-        updateDailyCompletion();
-    </script>
-</body>
-</html>
+        {Object.entries(notificationTimes).map(([moment, time]) => (
+          <div key={moment} className="mb-4">
+            <label className="block text-gray-300 mb-2 capitalize">
+              {moment === 'matin' ? '🌅' : moment === 'midi' ? '☀️' : '🌙'} {moment}
+            </label>
+            <input
+              type="time"
+              value={time}
+              onChange={(e) => setNotificationTimes(prev => ({
+                ...prev,
+                [moment]: e.target.value
+              }))}
+              className="w-full bg-gray-700 text-gray-100 px-4 py-2 rounded-lg border border-gray-600"
+            />
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 rounded-xl p-5 border border-purple-700">
+        <h3 className="text-lg font-semibold text-purple-300 mb-2">📱 À propos</h3>
+        <p className="text-gray-300 text-sm">
+          Protocole Essentiel Plus v1.0<br/>
+          Toutes vos données sont stockées localement sur votre appareil.
+        </p>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-gray-900 text-white pb-20">
+      <div className="max-w-md mx-auto p-4">
+        <div className="text-center mb-6 pt-4">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+            Protocole Essentiel Plus
+          </h1>
+          <p className="text-gray-400 text-sm mt-1">Suivi Intelligent</p>
+        </div>
+
+        {currentView === 'daily' && <DailyView />}
+        {currentView === 'analysis' && <AnalysisView />}
+        {currentView === 'guide' && <GuideView />}
+        {currentView === 'settings' && <SettingsView />}
+      </div>
+
+      <div className="fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700">
+        <div className="max-w-md mx-auto flex justify-around py-2">
+          {[
+            { id: 'daily', icon: Clock, label: 'Quotidien' },
+            { id: 'analysis', icon: TrendingUp, label: 'Analyse' },
+            { id: 'guide', icon: BookOpen, label: 'Guide' },
+            { id: 'settings', icon: Settings, label: 'Réglages' }
+          ].map(({ id, icon: Icon, label }) => (
+            <button
+              key={id}
+              onClick={() => setCurrentView(id)}
+              className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-all ${
+                currentView === id ? 'text-blue-400 bg-blue-900/30' : 'text-gray-400'
+              }`}
+            >
+              <Icon size={24} />
+              <span className="text-xs font-medium">{label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProtocolEssentialPlusApp;
