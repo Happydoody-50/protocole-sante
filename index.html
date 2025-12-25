@@ -5,52 +5,44 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Protocole Essentiel Plus</title>
 
-  <!-- Anti-cache (aide énormément sur Android/PWA) -->
+  <!-- Anti-cache -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
 
   <style>
     :root{
-      --bg:#0b1220;
-      --bg2:#070c16;
-      --card:#111b2e;
-      --card2:#0c1528;
+      --bg:#0b1220; --bg2:#070c16;
+      --card:rgba(17,27,46,.92); --card2:#0c1528;
       --line:rgba(255,255,255,.10);
-      --text:#eaf1ff;
-      --muted:#9fb0d0;
-      --blue:#3b82f6;
-      --purple:#8b5cf6;
-      --green:#22c55e;
-      --yellow:#f59e0b;
-      --red:#ef4444;
-      --pill:#172444;
+      --text:#eaf1ff; --muted:#9fb0d0;
+
+      --blue:#3b82f6; --purple:#8b5cf6; --green:#22c55e;
+      --yellow:#f59e0b; --red:#ef4444;
+
+      --goodBg: rgba(34,197,94,.18);
+      --midBg:  rgba(245,158,11,.18);
+      --badBg:  rgba(239,68,68,.18);
+      --neuBg:  rgba(255,255,255,.05);
     }
     *{box-sizing:border-box}
     body{
       margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
       background:linear-gradient(180deg,var(--bg2),var(--bg));
       color:var(--text);
-      padding-bottom:88px; /* nav bottom */
+      padding-bottom:96px;
     }
     .wrap{max-width:520px; margin:0 auto; padding:14px}
-    .title{
-      text-align:center; padding:10px 0 14px;
-    }
+    .title{text-align:center; padding:10px 0 14px;}
     .title h1{
-      margin:0;
-      font-size:26px;
-      letter-spacing:.2px;
+      margin:0; font-size:26px; font-weight:900;
       background:linear-gradient(90deg,#60a5fa,#a78bfa);
-      -webkit-background-clip:text;
-      background-clip:text;
-      color:transparent;
-      font-weight:800;
+      -webkit-background-clip:text; background-clip:text; color:transparent;
     }
     .title .sub{color:var(--muted); font-size:12px; margin-top:6px}
 
     .card{
-      background:rgba(17,27,46,.92);
+      background:var(--card);
       border:1px solid var(--line);
       border-radius:16px;
       padding:14px;
@@ -60,87 +52,48 @@
     .between{justify-content:space-between}
     .muted{color:var(--muted)}
     .small{font-size:12px}
-    .h2{
-      margin:0 0 10px;
-      font-size:20px;
-      font-weight:800;
-      color:var(--text);
-    }
-    .h3{
-      margin:0 0 10px;
-      font-size:16px;
-      font-weight:750;
-      color:#93c5fd;
-    }
-    .badge{
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.04);
-      color:var(--muted);
-      font-size:12px;
-      display:inline-flex;
-      gap:8px;
-      align-items:center;
-    }
-    .btn{
-      border:none;
-      cursor:pointer;
-      border-radius:12px;
-      padding:10px 12px;
-      font-weight:750;
-      color:white;
-      background:var(--blue);
-    }
-    .btn:active{transform:translateY(1px)}
-    .btn.ghost{
-      background:transparent;
-      border:1px solid var(--line);
-      color:var(--text);
-    }
-    .btn.green{background:var(--green)}
-    .btn.purple{background:var(--purple)}
-    .btn.red{
-      background:transparent;
-      border:1px solid rgba(239,68,68,.6);
-      color:#ffd6d6;
-    }
+    .h2{margin:0 0 10px; font-size:20px; font-weight:900;}
+    .h3{margin:0 0 10px; font-size:16px; font-weight:800; color:#93c5fd;}
 
-    input, textarea, select{
-      width:100%;
-      background:var(--card2);
-      color:var(--text);
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:10px 12px;
-      outline:none;
-      font-size:14px;
+    input, textarea{
+      width:100%; background:var(--card2); color:var(--text);
+      border:1px solid var(--line); border-radius:12px;
+      padding:10px 12px; outline:none; font-size:14px;
     }
-    textarea{min-height:74px; resize:vertical}
     input[type="date"], input[type="time"]{padding:9px 12px}
     label{display:block; font-size:12px; color:var(--muted); margin-bottom:6px}
 
-    .momentHeader{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom:10px;
+    .btn{
+      border:none; cursor:pointer; border-radius:12px;
+      padding:10px 12px; font-weight:850; color:white; background:var(--blue);
     }
-    .momentTitle{
-      display:flex; align-items:center; gap:8px;
-      font-size:18px; font-weight:850;
-      color:#60a5fa;
-      text-transform:capitalize;
+    .btn:active{transform:translateY(1px)}
+    .btn.green{background:var(--green)}
+    .btn.purple{background:var(--purple)}
+    .btn.ghost{background:transparent; border:1px solid var(--line); color:var(--text)}
+    .btn.red{background:transparent; border:1px solid rgba(239,68,68,.6); color:#ffd6d6}
+
+    .badge{
+      padding:6px 10px; border-radius:999px;
+      border:1px solid var(--line); background:rgba(255,255,255,.04);
+      color:var(--muted); font-size:12px; display:inline-flex; gap:8px; align-items:center;
     }
+    .divider{height:1px; background:var(--line); margin:12px 0}
+
+    /* Daily */
+    .momentHeader{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px;}
+    .momentTitle{display:flex; align-items:center; gap:8px; font-size:18px; font-weight:900; color:#60a5fa; text-transform:capitalize;}
     .momentTime{font-size:12px; color:var(--muted)}
-    .mic{
+
+    .iconBtn{
       width:42px; height:42px; border-radius:999px;
-      border:none; cursor:pointer;
-      display:flex; align-items:center; justify-content:center;
-      color:white; background:var(--purple);
+      border:none; cursor:pointer; display:flex; align-items:center; justify-content:center;
+      color:white;
     }
+    .mic{background:var(--purple)}
     .mic.recording{background:var(--red); animation:pulse 1.2s infinite}
+    .play{background:rgba(59,130,246,.95)}
+    .play.off{opacity:.5; cursor:not-allowed}
     @keyframes pulse{
       0%{box-shadow:0 0 0 0 rgba(239,68,68,.45)}
       70%{box-shadow:0 0 0 12px rgba(239,68,68,0)}
@@ -148,153 +101,94 @@
     }
 
     .suppBtn{
-      width:100%;
-      display:flex; justify-content:space-between; align-items:center;
-      gap:10px;
-      padding:12px;
-      border-radius:14px;
-      border:2px solid transparent;
-      background:rgba(255,255,255,.04);
-      cursor:pointer;
-      transition:.15s ease;
-      text-align:left;
+      width:100%; display:flex; justify-content:space-between; align-items:center; gap:10px;
+      padding:12px; border-radius:14px; border:2px solid transparent;
+      background:rgba(255,255,255,.04); cursor:pointer; transition:.15s ease; text-align:left;
     }
     .suppBtn:hover{background:rgba(255,255,255,.06)}
-    .suppBtn.checked{
-      background:rgba(34,197,94,.16);
-      border-color:rgba(34,197,94,.55);
-    }
-    .suppBtn.disabled{
-      opacity:.5;
-      cursor:not-allowed;
-    }
+    .suppBtn.checked{background:rgba(34,197,94,.16); border-color:rgba(34,197,94,.55);}
+    .suppBtn.disabled{opacity:.5; cursor:not-allowed}
+
     .suppLeft{display:flex; align-items:flex-start; gap:10px; flex:1}
-    .dot{
-      width:22px; height:22px; border-radius:999px;
-      border:2px solid rgba(255,255,255,.35);
-      display:flex; align-items:center; justify-content:center;
-      margin-top:2px;
-      flex:0 0 auto;
-    }
-    .dot.checked{
-      background:rgba(34,197,94,.9);
-      border-color:rgba(34,197,94,.9);
-    }
-    .suppName{font-weight:800}
+    .dot{width:22px; height:22px; border-radius:999px; border:2px solid rgba(255,255,255,.35);
+      display:flex; align-items:center; justify-content:center; margin-top:2px; flex:0 0 auto;}
+    .dot.checked{background:rgba(34,197,94,.9); border-color:rgba(34,197,94,.9);}
+    .suppName{font-weight:950; font-size:14px} /* NOM + visible */
     .suppDose{font-size:12px; color:var(--muted); margin-top:2px}
-    .infoBtn{
-      flex:0 0 auto;
-      width:34px; height:34px;
-      border-radius:999px;
-      border:none;
-      background:rgba(59,130,246,.95);
-      color:white;
-      cursor:pointer;
-    }
+    .infoBtn{flex:0 0 auto; width:34px; height:34px; border-radius:999px; border:none;
+      background:rgba(59,130,246,.95); color:white; cursor:pointer; font-weight:900;}
     .restNote{font-size:12px; color:var(--yellow); margin:6px 0 0 8px}
 
     .voiceBox{
-      margin-top:10px;
-      padding:10px 12px;
-      border-radius:14px;
+      margin-top:10px; padding:10px 12px; border-radius:14px;
       border:1px solid rgba(139,92,246,.45);
-      background:rgba(139,92,246,.14);
-      color:#e9ddff;
-      font-size:13px;
+      background:rgba(139,92,246,.14); color:#e9ddff; font-size:13px;
+      white-space:pre-wrap;
     }
 
     .slRow{display:flex; align-items:center; gap:10px; margin-top:8px}
     .slRow .tag{width:78px; font-size:12px; color:var(--muted)}
     input[type="range"]{flex:1}
-    .slVal{width:30px; text-align:right; font-weight:800; color:#93c5fd}
+    .slVal{width:30px; text-align:right; font-weight:900; color:#93c5fd}
 
-    .centerCard{
-      text-align:center;
-      padding:18px 12px;
-    }
-    .bigPct{font-size:46px; font-weight:900; color:#60a5fa; line-height:1}
-    .divider{height:1px; background:var(--line); margin:12px 0}
+    .centerCard{text-align:center; padding:18px 12px;}
+    .bigPct{font-size:46px; font-weight:950; color:#60a5fa; line-height:1}
 
-    /* Analysis bars */
+    /* Analysis: Week bars */
     .barRow{display:flex; align-items:center; gap:10px; margin:10px 0}
     .dayLabel{width:46px; color:var(--muted); font-size:12px}
-    .barWrap{
-      flex:1;
-      height:28px;
-      border-radius:999px;
-      overflow:hidden;
-      background:rgba(255,255,255,.06);
-      border:1px solid var(--line);
-      position:relative;
-    }
+    .barWrap{flex:1; height:28px; border-radius:999px; overflow:hidden; background:rgba(255,255,255,.06);
+      border:1px solid var(--line); position:relative;}
     .barFill{height:100%}
-    .barText{
-      position:absolute; inset:0;
-      display:flex; align-items:center; justify-content:center;
-      font-weight:850; font-size:12px; color:white;
-      text-shadow:0 1px 6px rgba(0,0,0,.35);
+    .barText{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+      font-weight:900; font-size:12px; color:white; text-shadow:0 1px 6px rgba(0,0,0,.35);}
+
+    /* Analysis: Month calendar */
+    .seg{display:flex; gap:10px}
+    .seg button{flex:1}
+    .calHead{display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin-top:8px}
+    .calHead div{font-size:11px; color:var(--muted); text-align:center}
+    .calGrid{display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin-top:10px}
+    .dayCell{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 6px;
+      text-align:center;
+      cursor:pointer;
+      background:var(--neuBg);
+      font-weight:900;
+      position:relative;
+      min-height:48px;
     }
+    .dayCell.off{opacity:.35; cursor:default}
+    .dayCell .pct{
+      position:absolute; left:0; right:0; bottom:6px;
+      font-size:10px; color:rgba(255,255,255,.85); font-weight:800;
+    }
+    .bgGood{background:var(--goodBg)}
+    .bgMid{background:var(--midBg)}
+    .bgBad{background:var(--badBg)}
 
     /* Modal */
-    .modalBg{
-      position:fixed; inset:0; background:rgba(0,0,0,.78);
-      display:none; align-items:center; justify-content:center;
-      padding:16px;
-      z-index:999;
-    }
+    .modalBg{position:fixed; inset:0; background:rgba(0,0,0,.78); display:none; align-items:center; justify-content:center; padding:16px; z-index:999;}
     .modalBg.show{display:flex}
-    .modal{
-      width:100%;
-      max-width:420px;
-      border-radius:18px;
-      border:1px solid var(--line);
-      background:rgba(17,27,46,.98);
-      padding:16px;
-    }
+    .modal{width:100%; max-width:420px; border-radius:18px; border:1px solid var(--line); background:rgba(17,27,46,.98); padding:16px;}
     .modal h3{margin:0 0 10px; font-size:18px; color:#60a5fa}
-    .sectionTitle{font-weight:900; margin:10px 0 4px}
-    .secGreen{color:#86efac}
-    .secRed{color:#fca5a5}
-    .secPurple{color:#d8b4fe}
-    .secYellow{color:#fde68a}
+    .sectionTitle{font-weight:950; margin:10px 0 4px}
+    .secGreen{color:#86efac} .secRed{color:#fca5a5} .secPurple{color:#d8b4fe} .secYellow{color:#fde68a}
     .modal p{margin:0; color:var(--text); font-size:13px; line-height:1.35}
-    .modal .btn{width:100%; margin-top:12px}
 
     /* Bottom nav */
-    .nav{
-      position:fixed; left:0; right:0; bottom:0;
-      background:rgba(17,27,46,.98);
-      border-top:1px solid var(--line);
-      padding:8px 8px 10px;
-      z-index:100;
-    }
+    .nav{position:fixed; left:0; right:0; bottom:0; background:rgba(17,27,46,.98); border-top:1px solid var(--line); padding:8px 8px 10px; z-index:100;}
     .navInner{max-width:520px; margin:0 auto; display:flex; justify-content:space-around}
-    .navBtn{
-      border:none; cursor:pointer; background:transparent;
-      color:rgba(234,241,255,.65);
-      padding:6px 10px;
-      border-radius:12px;
-      display:flex; flex-direction:column; align-items:center; gap:4px;
-      min-width:86px;
-    }
-    .navBtn.active{
-      color:#60a5fa;
-      background:rgba(59,130,246,.16);
-    }
-    .navIcon{font-size:18px}
-    .navLabel{font-size:11px; font-weight:750}
+    .navBtn{border:none; cursor:pointer; background:transparent; color:rgba(234,241,255,.65);
+      padding:6px 10px; border-radius:12px; display:flex; flex-direction:column; align-items:center; gap:4px; min-width:86px;}
+    .navBtn.active{color:#60a5fa; background:rgba(59,130,246,.16);}
+    .navIcon{font-size:18px} .navLabel{font-size:11px; font-weight:900}
 
-    .toast{
-      position:fixed; left:50%; bottom:92px; transform:translateX(-50%);
-      background:rgba(0,0,0,.78);
-      border:1px solid rgba(255,255,255,.16);
-      padding:10px 12px;
-      border-radius:14px;
-      z-index:1000;
-      max-width:92vw;
-      display:none;
-      font-size:13px;
-    }
+    .toast{position:fixed; left:50%; bottom:92px; transform:translateX(-50%);
+      background:rgba(0,0,0,.78); border:1px solid rgba(255,255,255,.16);
+      padding:10px 12px; border-radius:14px; z-index:1000; max-width:92vw; display:none; font-size:13px;}
     .toast.show{display:block}
   </style>
 </head>
@@ -312,7 +206,7 @@
         <div class="row between">
           <div>
             <div class="h2">Suivi Quotidien</div>
-            <div class="small muted">Sélectionne une date et coche les suppléments par moment.</div>
+            <div class="small muted">Coche les suppléments par moment. Dicte une note 🎤 et écoute-la 🔊.</div>
           </div>
           <div style="min-width:170px">
             <label>Date</label>
@@ -322,7 +216,6 @@
       </div>
 
       <div style="height:12px"></div>
-
       <div id="momentsContainer"></div>
 
       <div style="height:12px"></div>
@@ -340,24 +233,65 @@
         <div class="row between">
           <div>
             <div class="h2">Analyse</div>
-            <div class="small muted">Conformité des 7 derniers jours et export CSV.</div>
+            <div class="small muted">Hebdo + mensuel (calendrier coloré) + export CSV.</div>
           </div>
           <button id="exportCSV" class="btn green">⬇ Export CSV</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="seg">
+          <button id="segWeek" class="btn">Semaine</button>
+          <button id="segMonth" class="btn ghost">Mois</button>
         </div>
       </div>
 
       <div style="height:12px"></div>
 
-      <div class="card centerCard" style="background:linear-gradient(135deg, rgba(34,197,94,.18), rgba(59,130,246,.18))">
-        <div class="bigPct" id="weekAvg">0%</div>
-        <div class="muted">Conformité hebdomadaire</div>
+      <!-- Weekly -->
+      <div id="analysis-week">
+        <div class="card centerCard" style="background:linear-gradient(135deg, rgba(34,197,94,.18), rgba(59,130,246,.18))">
+          <div class="bigPct" id="weekAvg">0%</div>
+          <div class="muted">Conformité hebdomadaire</div>
+        </div>
+
+        <div style="height:12px"></div>
+
+        <div class="card">
+          <div class="h3">7 Derniers jours</div>
+          <div id="weekBars"></div>
+        </div>
       </div>
 
-      <div style="height:12px"></div>
+      <!-- Monthly -->
+      <div id="analysis-month" style="display:none">
+        <div class="card">
+          <div class="row between">
+            <div class="h3" style="margin:0">Calendrier mensuel</div>
+            <div class="row" style="gap:8px">
+              <button id="prevMonth" class="btn ghost">◀</button>
+              <span class="badge" id="monthLabel">—</span>
+              <button id="nextMonth" class="btn ghost">▶</button>
+            </div>
+          </div>
+          <div class="small muted" style="margin-top:10px">
+            Couleurs: <span class="badge" style="background:var(--badBg);color:#fff">Rouge &lt;50%</span>
+            <span class="badge" style="background:var(--midBg);color:#fff">Jaune 50–80%</span>
+            <span class="badge" style="background:var(--goodBg);color:#fff">Vert &gt;80%</span>
+          </div>
 
-      <div class="card">
-        <div class="h3">7 Derniers jours</div>
-        <div id="weekBars"></div>
+          <div class="calHead">
+            <div>Lun</div><div>Mar</div><div>Mer</div><div>Jeu</div><div>Ven</div><div>Sam</div><div>Dim</div>
+          </div>
+          <div class="calGrid" id="calGrid"></div>
+
+          <div class="divider"></div>
+          <div class="row between">
+            <div class="small muted">Moyenne du mois</div>
+            <div class="badge" id="monthAvg">—</div>
+          </div>
+          <div class="small muted" style="margin-top:10px">Astuce: touche un jour pour ouvrir ce jour dans “Quotidien”.</div>
+        </div>
       </div>
     </div>
 
@@ -374,7 +308,6 @@
       </div>
 
       <div style="height:12px"></div>
-
       <div id="guideList"></div>
     </div>
 
@@ -382,7 +315,7 @@
     <div id="view-settings" class="view" style="display:none">
       <div class="card">
         <div class="h2">Paramètres</div>
-        <div class="small muted">Heures de notification (affichées) + infos + nettoyage.</div>
+        <div class="small muted">Heures (affichées) + nettoyage données.</div>
       </div>
 
       <div style="height:12px"></div>
@@ -394,12 +327,10 @@
           <label>🌅 Matin</label>
           <input id="time-matin" type="time" />
         </div>
-
         <div style="margin-bottom:10px">
           <label>☀️ Midi</label>
           <input id="time-midi" type="time" />
         </div>
-
         <div style="margin-bottom:10px">
           <label>🌙 Soir</label>
           <input id="time-soir" type="time" />
@@ -414,7 +345,7 @@
         <div class="h3" style="color:#e9ddff">📱 À propos</div>
         <div class="small muted">
           Protocole Essentiel Plus — v1 (HTML/JS)<br/>
-          Toutes tes données sont stockées localement sur ton appareil (localStorage).
+          Données stockées localement sur cet appareil.
         </div>
       </div>
 
@@ -425,16 +356,13 @@
         <button id="clearToday" class="btn red">Effacer la journée sélectionnée</button>
         <div style="height:10px"></div>
         <button id="clearAll" class="btn red">Tout effacer (sur cet appareil)</button>
-        <div class="small muted" style="margin-top:10px">
-          ⚠️ “Tout effacer” supprime protocoles cochés, notes vocales et scores.
-        </div>
       </div>
     </div>
   </div>
 
   <!-- Modal Info -->
   <div id="modalBg" class="modalBg" role="dialog" aria-modal="true">
-    <div class="modal" id="modalCard">
+    <div class="modal">
       <h3 id="modalTitle">Info</h3>
 
       <div class="sectionTitle secGreen">📦 Dosage</div>
@@ -467,20 +395,16 @@
   <div class="nav">
     <div class="navInner">
       <button class="navBtn active" data-view="daily">
-        <div class="navIcon">🕒</div>
-        <div class="navLabel">Quotidien</div>
+        <div class="navIcon">🕒</div><div class="navLabel">Quotidien</div>
       </button>
       <button class="navBtn" data-view="analysis">
-        <div class="navIcon">📈</div>
-        <div class="navLabel">Analyse</div>
+        <div class="navIcon">📈</div><div class="navLabel">Analyse</div>
       </button>
       <button class="navBtn" data-view="guide">
-        <div class="navIcon">📖</div>
-        <div class="navLabel">Guide</div>
+        <div class="navIcon">📖</div><div class="navLabel">Guide</div>
       </button>
       <button class="navBtn" data-view="settings">
-        <div class="navIcon">⚙️</div>
-        <div class="navLabel">Réglages</div>
+        <div class="navIcon">⚙️</div><div class="navLabel">Réglages</div>
       </button>
     </div>
   </div>
@@ -489,7 +413,6 @@
     // =========================
     // Données: protocole Claude
     // =========================
-    const APP_VERSION = "v1";
     const protocol = {
       matin: [
         { name: "Bleu de Méthylène", dosage: "5 gouttes", reminder: "À jeun, dilué dans un verre d’eau" },
@@ -579,11 +502,18 @@
     // =========================
     let currentView = "daily";
     let selectedDate = new Date().toISOString().split("T")[0];
+
     let dailyData = getObj(LS.dailyData, {});          // key: date-moment-supp => bool
     let wellbeingScores = getObj(LS.wellbeing, {});    // key: date-moment => {Énergie,Immunité,Stress}
     let voiceNotes = getObj(LS.voice, {});             // key: date-moment => string
     let notificationTimes = getObj(LS.times, { matin:"08:00", midi:"12:00", soir:"20:00" });
+
     let isRecording = false;
+    let analysisMode = "week"; // week | month
+    let monthCursor = (() => {
+      const d = new Date(selectedDate + "T00:00:00");
+      return { y: d.getFullYear(), m: d.getMonth() }; // m: 0-11
+    })();
 
     // =========================
     // Utils
@@ -602,15 +532,20 @@
     const keyTaken = (date, moment, suppName) => `${date}-${moment}-${suppName}`;
     const keyMoment = (date, moment) => `${date}-${moment}`;
 
-    // Ashwagandha: 3 semaines ON / 1 OFF
+    // 3 semaines ON / 1 OFF
     const isAshwagandhaRestWeek = (dateStr) => {
       const d = new Date(dateStr + "T00:00:00");
       const start = new Date(d.getFullYear(), 0, 1);
-      const weekOfYear = Math.floor((d - start) / 604800000); // 7*24*60*60*1000
+      const weekOfYear = Math.floor((d - start) / 604800000);
       return (weekOfYear % 4) === 3;
     };
 
-    const supportsSpeech = () => ("webkitSpeechRecognition" in window);
+    // Speech (Android: parfois SpeechRecognition, parfois webkitSpeechRecognition)
+    const SpeechRecCtor = () => window.SpeechRecognition || window.webkitSpeechRecognition || null;
+    const supportsSpeech = () => !!SpeechRecCtor();
+
+    // Lire les notes avec la voix du téléphone (TTS)
+    const canSpeak = () => ("speechSynthesis" in window);
 
     const getDayCompletion = (dateStr) => {
       let total = 0, completed = 0;
@@ -640,15 +575,132 @@
       return arr;
     };
 
-    const saveAll = () => {
-      setObj(LS.dailyData, dailyData);
-      setObj(LS.wellbeing, wellbeingScores);
-      setObj(LS.voice, voiceNotes);
-      setObj(LS.times, notificationTimes);
+    const monthNameFR = (y,m) => {
+      const d = new Date(y, m, 1);
+      return d.toLocaleDateString("fr-FR", { month:"long", year:"numeric" });
+    };
+
+    const isoFromYMD = (y,m,day) => {
+      const d = new Date(y, m, day);
+      return d.toISOString().split("T")[0];
     };
 
     // =========================
-    // Rendering
+    // Modal Info
+    // =========================
+    const openInfoModal = (supp) => {
+      const g = supplementGuide[supp.name] || { avantages:"—", inconvenients:"—", mecanisme:"—", synergies:"—" };
+      $("modalTitle").textContent = supp.name;
+      $("modalDosage").textContent = supp.dosage || "—";
+      $("modalReminder").textContent = supp.reminder || "—";
+      $("modalAdv").textContent = g.avantages || "—";
+      $("modalCons").textContent = g.inconvenients || "—";
+      $("modalMech").textContent = g.mecanisme || "—";
+      $("modalSyn").textContent = g.synergies || "—";
+      $("modalBg").classList.add("show");
+    };
+    const closeModal = () => $("modalBg").classList.remove("show");
+
+    // =========================
+    // Voice (dictée) + écoute (TTS)
+    // =========================
+    const startVoiceRecording = (moment) => {
+      const Ctor = SpeechRecCtor();
+      if (!Ctor) {
+        alert("Reconnaissance vocale non supportée sur ce navigateur.\nEssaie Chrome à jour, et autorise le micro (cadenas → Microphone → Autoriser).");
+        return;
+      }
+      if (isRecording) return;
+
+      const rec = new Ctor();
+      rec.lang = "fr-FR";
+      rec.continuous = false;
+      rec.interimResults = false;
+      rec.maxAlternatives = 1;
+
+      rec.onstart = () => { isRecording = true; renderDaily(); toast("🎤 Parle maintenant…"); };
+      rec.onresult = (event) => {
+        const transcript = event.results?.[0]?.[0]?.transcript || "";
+        const k = keyMoment(selectedDate, moment);
+        const prev = voiceNotes[k] || "";
+        voiceNotes[k] = (prev + (prev ? "\n" : "") + transcript).trim();
+        setObj(LS.voice, voiceNotes);
+        toast("Note enregistrée ✅");
+      };
+      rec.onerror = (e) => {
+        const msg = (e && e.error) ? e.error : "Erreur micro";
+        // causes fréquentes: not-allowed / service-not-allowed / no-speech
+        alert("Erreur micro : " + msg + "\n\nVérifie: cadenas à gauche de l'URL → Microphone → Autoriser.");
+      };
+      rec.onend = () => { isRecording = false; renderDaily(); };
+
+      try { rec.start(); } catch {
+        isRecording = false; renderDaily();
+        alert("Impossible de démarrer le micro. Vérifie les permissions (cadenas → Microphone).");
+      }
+    };
+
+    const speakNote = (moment) => {
+      const k = keyMoment(selectedDate, moment);
+      const text = (voiceNotes[k] || "").trim();
+      if (!text) return;
+
+      if (!canSpeak()) {
+        alert("Lecture audio non supportée sur ce navigateur.");
+        return;
+      }
+
+      // stop si déjà en train de parler
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+        toast("Lecture arrêtée");
+        return;
+      }
+
+      const ut = new SpeechSynthesisUtterance(text);
+      ut.lang = "fr-FR";
+      ut.rate = 1.0;
+      ut.pitch = 1.0;
+      window.speechSynthesis.speak(ut);
+      toast("🔊 Lecture… (re-clique pour arrêter)");
+    };
+
+    // =========================
+    // Export CSV
+    // =========================
+    const exportCSV = () => {
+      let csv = "Date,Moment,Supplément,Pris,Énergie,Immunité,Stress,Notes Vocales\n";
+      const dates = Object.keys(dailyData).map(k => k.split("-").slice(0,3).join("-"));
+      const uniqueDates = [...new Set(dates)].sort();
+
+      uniqueDates.forEach(date => {
+        Object.keys(protocol).forEach(moment => {
+          protocol[moment].forEach(supp => {
+            const k = keyTaken(date, moment, supp.name);
+            const taken = dailyData[k] ? "Oui" : "Non";
+            const wb = wellbeingScores[keyMoment(date, moment)] || {};
+            const note = voiceNotes[keyMoment(date, moment)] || "";
+
+            const e = wb["Énergie"] ?? "";
+            const im = wb["Immunité"] ?? "";
+            const st = wb["Stress"] ?? "";
+
+            const safeNote = String(note).replace(/"/g,'""');
+            csv += `${date},${moment},${supp.name},${taken},${e},${im},${st},"${safeNote}"\n`;
+          });
+        });
+      });
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `protocole_essentiel_${new Date().toISOString().split("T")[0]}.csv`;
+      link.click();
+      toast("CSV exporté");
+    };
+
+    // =========================
+    // Render
     // =========================
     const renderNav = () => {
       document.querySelectorAll(".navBtn").forEach(btn => {
@@ -659,6 +711,12 @@
         const el = $("view-" + v);
         el.style.display = (v === currentView) ? "" : "none";
       });
+    };
+
+    const renderDayPct = () => {
+      const { pct, total, completed } = getDayCompletion(selectedDate);
+      $("dayPct").textContent = pct + "%";
+      $("dayPctHint").textContent = total ? `${completed}/${total} prises cochées` : "Aucune donnée";
     };
 
     const renderDaily = () => {
@@ -672,8 +730,6 @@
         card.className = "card";
         card.style.marginTop = "12px";
 
-        const isRest = (moment === "soir") && isAshwagandhaRestWeek(selectedDate);
-
         const header = document.createElement("div");
         header.className = "momentHeader";
 
@@ -684,15 +740,33 @@
           " " + moment +
           ` <span class="badge" style="margin-left:6px">🔔 <span class="momentTime">${notificationTimes[moment] || ""}</span></span>`;
 
+        const btns = document.createElement("div");
+        btns.className = "row";
+        btns.style.gap = "8px";
+
+        // play button (écoute)
+        const noteKey = keyMoment(selectedDate, moment);
+        const hasNote = !!(voiceNotes[noteKey] && voiceNotes[noteKey].trim());
+
+        const playBtn = document.createElement("button");
+        playBtn.className = "iconBtn play" + (hasNote ? "" : " off");
+        playBtn.innerHTML = "🔊";
+        playBtn.title = hasNote ? "Écouter la note" : "Aucune note à lire";
+        playBtn.disabled = !hasNote;
+        playBtn.onclick = () => speakNote(moment);
+
+        // mic button (dictée)
         const micBtn = document.createElement("button");
-        micBtn.className = "mic" + (isRecording ? " recording" : "");
-        micBtn.title = supportsSpeech() ? "Dicter une note" : "Reconnaissance vocale non supportée";
+        micBtn.className = "iconBtn mic" + (isRecording ? " recording" : "");
         micBtn.innerHTML = "🎤";
+        micBtn.title = supportsSpeech() ? "Dicter une note" : "Dictée non supportée";
         micBtn.onclick = () => startVoiceRecording(moment);
 
-        header.appendChild(left);
-        header.appendChild(micBtn);
+        btns.appendChild(playBtn);
+        btns.appendChild(micBtn);
 
+        header.appendChild(left);
+        header.appendChild(btns);
         card.appendChild(header);
 
         supplements.forEach(supp => {
@@ -712,7 +786,7 @@
             const k = keyTaken(selectedDate, moment, supp.name);
             dailyData[k] = !dailyData[k];
             setObj(LS.dailyData, dailyData);
-            renderDaily(); // refresh
+            renderDaily();
             renderDayPct();
           };
 
@@ -724,7 +798,8 @@
           dot.textContent = checked ? "✓" : "";
 
           const txt = document.createElement("div");
-          txt.innerHTML = `<div class="suppName">${supp.name}</div><div class="suppDose">${supp.dosage}</div>`;
+          // ✅ NOM visible + DOSAGE petit
+          txt.innerHTML = `<div class="suppName">${supp.name}</div><div class="suppDose">${supp.dosage || ""}</div>`;
 
           leftBlock.appendChild(dot);
           leftBlock.appendChild(txt);
@@ -746,15 +821,13 @@
           if (restWeek) {
             const p = document.createElement("div");
             p.className = "restNote";
-            p.textContent = "Semaine de repos";
+            p.textContent = "Semaine de repos (auto)";
             wrapper.appendChild(p);
           }
 
           card.appendChild(wrapper);
         });
 
-        // Notes vocales affichées
-        const noteKey = keyMoment(selectedDate, moment);
         if (voiceNotes[noteKey] && voiceNotes[noteKey].trim()) {
           const vb = document.createElement("div");
           vb.className = "voiceBox";
@@ -768,7 +841,7 @@
 
         const wbWrap = document.createElement("div");
         wbWrap.style.marginTop = "10px";
-        wbWrap.innerHTML = `<div class="small" style="font-weight:850;color:rgba(234,241,255,.85)">Bien-être ${moment}</div>`;
+        wbWrap.innerHTML = `<div class="small" style="font-weight:900;color:rgba(234,241,255,.85)">Bien-être ${moment}</div>`;
 
         ["Énergie","Immunité","Stress"].forEach(cat => {
           const row = document.createElement("div");
@@ -798,25 +871,17 @@
           row.appendChild(tag);
           row.appendChild(range);
           row.appendChild(val);
-
           wbWrap.appendChild(row);
         });
 
         card.appendChild(wbWrap);
-
         container.appendChild(card);
       });
 
       renderDayPct();
     };
 
-    const renderDayPct = () => {
-      const { pct, total, completed } = getDayCompletion(selectedDate);
-      $("dayPct").textContent = pct + "%";
-      $("dayPctHint").textContent = total ? `${completed}/${total} prises cochées` : "Aucun supplément actif";
-    };
-
-    const renderAnalysis = () => {
+    const renderAnalysisWeek = () => {
       const data = getWeekData();
       const avg = Math.round(data.reduce((s,x)=>s + x.completion,0) / data.length);
       $("weekAvg").textContent = avg + "%";
@@ -839,7 +904,6 @@
         fill.className = "barFill";
         fill.style.width = d.completion + "%";
 
-        // couleur selon score
         let col = "rgba(239,68,68,.85)";
         if (d.completion >= 80) col = "rgba(34,197,94,.85)";
         else if (d.completion >= 50) col = "rgba(245,158,11,.85)";
@@ -854,151 +918,110 @@
 
         row.appendChild(day);
         row.appendChild(wrap);
-
         weekBars.appendChild(row);
       });
+    };
+
+    const renderAnalysisMonth = () => {
+      const { y, m } = monthCursor;
+      $("monthLabel").textContent = monthNameFR(y, m);
+
+      const first = new Date(y, m, 1);
+      const last = new Date(y, m + 1, 0);
+      const daysInMonth = last.getDate();
+
+      // lundi=0 ... dimanche=6
+      const jsDay = first.getDay(); // dim=0..sam=6
+      const mondayIndex = (jsDay + 6) % 7;
+
+      const grid = $("calGrid");
+      grid.innerHTML = "";
+
+      // cases vides avant le 1er
+      for (let i = 0; i < mondayIndex; i++) {
+        const d = document.createElement("div");
+        d.className = "dayCell off";
+        d.textContent = "";
+        grid.appendChild(d);
+      }
+
+      let sum = 0, count = 0;
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const iso = isoFromYMD(y, m, day);
+        const { pct, total } = getDayCompletion(iso);
+
+        const cell = document.createElement("div");
+        cell.className = "dayCell";
+
+        // couleur selon % (si total=0, neutre)
+        if (total > 0) {
+          if (pct < 50) cell.classList.add("bgBad");
+          else if (pct < 80) cell.classList.add("bgMid");
+          else cell.classList.add("bgGood");
+
+          const pctEl = document.createElement("div");
+          pctEl.className = "pct";
+          pctEl.textContent = pct + "%";
+          cell.appendChild(pctEl);
+
+          sum += pct; count++;
+        }
+
+        cell.insertAdjacentText("afterbegin", String(day));
+
+        cell.onclick = () => {
+          // ouvre ce jour dans Quotidien
+          selectedDate = iso;
+          $("selectedDate").value = selectedDate;
+          currentView = "daily";
+          renderNav();
+          renderDaily();
+          toast("Date ouverte : " + iso);
+        };
+
+        grid.appendChild(cell);
+      }
+
+      const avg = count ? Math.round(sum / count) : 0;
+      $("monthAvg").textContent = count ? (avg + "%") : "— (aucune donnée)";
+    };
+
+    const renderAnalysis = () => {
+      // toggle views
+      $("analysis-week").style.display = (analysisMode === "week") ? "" : "none";
+      $("analysis-month").style.display = (analysisMode === "month") ? "" : "none";
+
+      $("segWeek").className = (analysisMode === "week") ? "btn" : "btn ghost";
+      $("segMonth").className = (analysisMode === "month") ? "btn" : "btn ghost";
+
+      if (analysisMode === "week") renderAnalysisWeek();
+      else renderAnalysisMonth();
     };
 
     const renderGuide = () => {
       const gl = $("guideList");
       gl.innerHTML = "";
-
       Object.entries(supplementGuide).forEach(([name, info]) => {
         const card = document.createElement("div");
         card.className = "card";
         card.style.marginBottom = "12px";
 
-        const h = document.createElement("div");
-        h.className = "h3";
-        h.style.fontSize = "18px";
-        h.textContent = name;
-
-        const s1 = document.createElement("div");
-        s1.innerHTML = `<div class="sectionTitle secGreen">✅ Avantages</div><p>${escapeHtml(info.avantages)}</p>`;
-
-        const s2 = document.createElement("div");
-        s2.innerHTML = `<div class="sectionTitle secRed">⚠️ Inconvénients</div><p>${escapeHtml(info.inconvenients)}</p>`;
-
-        const s3 = document.createElement("div");
-        s3.innerHTML = `<div class="sectionTitle secPurple">🔬 Mécanisme</div><p>${escapeHtml(info.mecanisme)}</p>`;
-
-        const s4 = document.createElement("div");
-        s4.innerHTML = `<div class="sectionTitle secYellow">🤝 Synergies</div><p>${escapeHtml(info.synergies)}</p>`;
-
-        card.appendChild(h);
-        card.appendChild(s1);
-        card.appendChild(s2);
-        card.appendChild(s3);
-        card.appendChild(s4);
-
+        card.innerHTML = `
+          <div class="h3" style="font-size:18px">${name}</div>
+          <div class="sectionTitle secGreen">✅ Avantages</div><p>${info.avantages}</p>
+          <div class="sectionTitle secRed">⚠️ Inconvénients</div><p>${info.inconvenients}</p>
+          <div class="sectionTitle secPurple">🔬 Mécanisme</div><p>${info.mecanisme}</p>
+          <div class="sectionTitle secYellow">🤝 Synergies</div><p>${info.synergies}</p>
+        `;
         gl.appendChild(card);
       });
     };
 
     const renderSettings = () => {
       $("time-matin").value = notificationTimes.matin || "08:00";
-      $("time-midi").value = notificationTimes.midi || "12:00";
-      $("time-soir").value = notificationTimes.soir || "20:00";
-    };
-
-    // =========================
-    // Modal Info
-    // =========================
-    const escapeHtml = (s) => String(s ?? "")
-      .replaceAll("&","&amp;").replaceAll("<","&lt;")
-      .replaceAll(">","&gt;").replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
-
-    const openInfoModal = (supp) => {
-      const g = supplementGuide[supp.name] || { avantages:"—", inconvenients:"—", mecanisme:"—", synergies:"—" };
-
-      $("modalTitle").textContent = supp.name;
-      $("modalDosage").textContent = supp.dosage || "—";
-      $("modalReminder").textContent = supp.reminder || "—";
-      $("modalAdv").textContent = g.avantages || "—";
-      $("modalCons").textContent = g.inconvenients || "—";
-      $("modalMech").textContent = g.mecanisme || "—";
-      $("modalSyn").textContent = g.synergies || "—";
-
-      $("modalBg").classList.add("show");
-    };
-
-    const closeModal = () => $("modalBg").classList.remove("show");
-
-    // =========================
-    // Voice recording (dictée)
-    // =========================
-    const startVoiceRecording = (moment) => {
-      if (!supportsSpeech()) {
-        alert("Désolé, votre navigateur ne supporte pas la reconnaissance vocale.");
-        return;
-      }
-      if (isRecording) return;
-
-      const rec = new window.webkitSpeechRecognition();
-      rec.lang = "fr-FR";
-      rec.continuous = false;
-      rec.interimResults = false;
-
-      rec.onstart = () => { isRecording = true; renderDaily(); toast("🎤 Enregistrement…"); };
-
-      rec.onresult = (event) => {
-        const transcript = event.results[0][0].transcript || "";
-        const k = keyMoment(selectedDate, moment);
-        const prev = voiceNotes[k] || "";
-        voiceNotes[k] = (prev + " " + transcript).trim();
-        setObj(LS.voice, voiceNotes);
-        isRecording = false;
-        renderDaily();
-        toast("Note ajoutée");
-      };
-
-      rec.onerror = () => {
-        isRecording = false;
-        renderDaily();
-        alert("Erreur d'enregistrement vocal.");
-      };
-
-      rec.onend = () => { isRecording = false; renderDaily(); };
-
-      try { rec.start(); } catch { isRecording = false; renderDaily(); }
-    };
-
-    // =========================
-    // Export CSV (comme Claude)
-    // =========================
-    const exportCSV = () => {
-      let csv = "Date,Moment,Supplément,Pris,Énergie,Immunité,Stress,Notes Vocales\n";
-
-      // collect unique dates from dailyData keys
-      const dates = Object.keys(dailyData).map(k => k.split("-").slice(0,3).join("-"));
-      const uniqueDates = [...new Set(dates)].sort();
-
-      uniqueDates.forEach(date => {
-        Object.keys(protocol).forEach(moment => {
-          protocol[moment].forEach(supp => {
-            const k = keyTaken(date, moment, supp.name);
-            const taken = dailyData[k] ? "Oui" : "Non";
-
-            const wb = wellbeingScores[keyMoment(date, moment)] || {};
-            const note = voiceNotes[keyMoment(date, moment)] || "";
-
-            const e = wb["Énergie"] ?? "";
-            const im = wb["Immunité"] ?? "";
-            const st = wb["Stress"] ?? "";
-
-            const safeNote = String(note).replace(/"/g,'""');
-            csv += `${date},${moment},${supp.name},${taken},${e},${im},${st},"${safeNote}"\n`;
-          });
-        });
-      });
-
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = `protocole_essentiel_${new Date().toISOString().split("T")[0]}.csv`;
-      link.click();
-      toast("CSV exporté");
+      $("time-midi").value  = notificationTimes.midi  || "12:00";
+      $("time-soir").value  = notificationTimes.soir  || "20:00";
     };
 
     // =========================
@@ -1008,7 +1031,6 @@
       btn.addEventListener("click", () => {
         currentView = btn.getAttribute("data-view");
         renderNav();
-
         if (currentView === "daily") renderDaily();
         if (currentView === "analysis") renderAnalysis();
         if (currentView === "guide") renderGuide();
@@ -1018,8 +1040,31 @@
 
     $("selectedDate").addEventListener("change", (e) => {
       selectedDate = e.target.value || selectedDate;
+      // sync month cursor to selected
+      const d = new Date(selectedDate + "T00:00:00");
+      monthCursor = { y: d.getFullYear(), m: d.getMonth() };
       renderDaily();
       if (currentView === "analysis") renderAnalysis();
+    });
+
+    $("segWeek").addEventListener("click", () => {
+      analysisMode = "week";
+      renderAnalysis();
+    });
+    $("segMonth").addEventListener("click", () => {
+      analysisMode = "month";
+      renderAnalysis();
+    });
+
+    $("prevMonth").addEventListener("click", () => {
+      monthCursor.m -= 1;
+      if (monthCursor.m < 0) { monthCursor.m = 11; monthCursor.y -= 1; }
+      renderAnalysisMonth();
+    });
+    $("nextMonth").addEventListener("click", () => {
+      monthCursor.m += 1;
+      if (monthCursor.m > 11) { monthCursor.m = 0; monthCursor.y += 1; }
+      renderAnalysisMonth();
     });
 
     $("closeModal").addEventListener("click", closeModal);
@@ -1033,19 +1078,21 @@
       notificationTimes.soir  = $("time-soir").value  || "20:00";
       setObj(LS.times, notificationTimes);
       toast("Heures sauvegardées");
-      if (currentView === "daily") renderDaily();
+      renderDaily();
     });
 
     $("clearToday").addEventListener("click", () => {
       const ok = confirm("Effacer toutes les données pour la date sélectionnée ?");
       if (!ok) return;
 
-      // remove dailyData keys of that date
       Object.keys(dailyData).forEach(k => { if (k.startsWith(selectedDate + "-")) delete dailyData[k]; });
       Object.keys(wellbeingScores).forEach(k => { if (k.startsWith(selectedDate + "-")) delete wellbeingScores[k]; });
       Object.keys(voiceNotes).forEach(k => { if (k.startsWith(selectedDate + "-")) delete voiceNotes[k]; });
 
-      saveAll();
+      setObj(LS.dailyData, dailyData);
+      setObj(LS.wellbeing, wellbeingScores);
+      setObj(LS.voice, voiceNotes);
+
       toast("Journée effacée");
       renderDaily();
       if (currentView === "analysis") renderAnalysis();
@@ -1060,7 +1107,11 @@
       voiceNotes = {};
       notificationTimes = { matin:"08:00", midi:"12:00", soir:"20:00" };
 
-      saveAll();
+      setObj(LS.dailyData, dailyData);
+      setObj(LS.wellbeing, wellbeingScores);
+      setObj(LS.voice, voiceNotes);
+      setObj(LS.times, notificationTimes);
+
       toast("Tout effacé");
       renderSettings();
       renderDaily();
@@ -1071,17 +1122,22 @@
     // Init
     // =========================
     (() => {
-      // init date
       $("selectedDate").value = selectedDate;
+      const d = new Date(selectedDate + "T00:00:00");
+      monthCursor = { y: d.getFullYear(), m: d.getMonth() };
 
-      // initial renders
       renderNav();
       renderDaily();
       renderGuide();
       renderSettings();
-      // analysis lazy (mais ok à init)
       renderAnalysis();
-      toast("Chargé ✅");
+
+      // Info rapide sur dictée
+      if (!supportsSpeech()) {
+        toast("🎤 Dictée: non supportée ici (Chrome à jour recommandé).");
+      } else {
+        toast("Chargé ✅ (pense à autoriser le micro 🔒)");
+      }
     })();
   </script>
 </body>
