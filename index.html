@@ -417,6 +417,38 @@
         <div class="navIcon">⚙️</div><div class="navLabel">Réglages</div>
       </button>
     </div>
+<div class="card" style="margin-top:12px;">
+  <h3 style="font-size:16px; font-weight:900; color:#93c5fd; margin-bottom:10px;">
+    🗓️ Export des notes mensuelles
+  </h3>
+
+  <label style="font-size:12px; color:rgba(255,255,255,.7);">
+    Choisir un mois
+  </label>
+
+  <input
+    id="monthPicker"
+    type="month"
+    style="width:100%; margin-top:6px; padding:10px;
+           border-radius:12px; background:rgba(255,255,255,.06);
+           border:1px solid rgba(255,255,255,.15); color:#fff;"
+  />
+
+  <button class="btn" style="margin-top:10px; width:100%; background:#16a34a;"
+    onclick="exportMonthlyNotesCSV(document.getElementById('monthPicker').value)">
+    Télécharger notes du mois (CSV)
+  </button>
+
+  <button class="btn" style="margin-top:10px; width:100%; background:#2563eb;"
+    onclick="exportMonthlyNotesTXT(document.getElementById('monthPicker').value)">
+    Télécharger notes du mois (TXT)
+  </button>
+
+  <p style="margin-top:8px; font-size:12px; color:rgba(255,255,255,.6);">
+    CSV = Excel • TXT = lisible pour médecin
+  </p>
+</div>
+
   </div>
 
   <script>
@@ -1149,6 +1181,95 @@
         toast("Chargé ✅ (pense à autoriser le micro 🔒)");
       }
     })();
+// ===== EXPORT MENSUEL DES NOTES (CSV + TXT) =====
+function getVoiceNotesStore() {
+  const KEY = "voiceNotes_v1"; // clé confirmée
+  try {
+    return JSON.parse(localStorage.getItem(KEY)) || {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function downloadFile(content, filename, mime) {
+  const blob = new Blob([content], { type: mime });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+
+function exportMonthlyNotesCSV(month) {
+  if (!month) {
+    alert("Choisis un mois d’abord");
+    return;
+  }
+
+  const voiceNotes = getVoiceNotesStore();
+
+  const entries = Object.entries(voiceNotes)
+    .filter(([k, v]) => k.startsWith(`${month}-`) && String(v || "").trim())
+    .map(([k, v]) => {
+      const parts = k.split("-");
+      return {
+        date: `${parts[0]}-${parts[1]}-${parts[2]}`,
+        moment: parts[3] || "",
+        note: String(v).trim()
+      };
+    })
+    .sort((a, b) => (a.date + a.moment).localeCompare(b.date + b.moment));
+
+  let csv = "Mois,Date,Moment,Note\n";
+  entries.forEach(e => {
+    csv += `${month},${e.date},${e.moment},"${e.note.replace(/"/g, '""')}"\n`;
+  });
+
+  downloadFile(csv, `notes_${month}.csv`, "text/csv;charset=utf-8;");
+}
+
+function exportMonthlyNotesTXT(month) {
+  if (!month) {
+    alert("Choisis un mois d’abord");
+    return;
+  }
+
+  const voiceNotes = getVoiceNotesStore();
+  const keys = Object.keys(voiceNotes).filter(
+    k => k.startsWith(`${month}-`) && String(voiceNotes[k] || "").trim()
+  );
+
+  const dates = [...new Set(keys.map(k => k.split("-").slice(0, 3).join("-")))].sort();
+  const momentLabel = { matin: "Matin", midi: "Midi", soir: "Soir" };
+
+  let txt = `NOTES MENSUELLES — ${month}\n`;
+  txt += `Exporté le ${new Date().toISOString().slice(0,10)}\n`;
+  txt += `========================================\n\n`;
+
+  if (!dates.length) {
+    txt += "Aucune note pour ce mois.\n";
+  } else {
+    dates.forEach(date => {
+      txt += `📅 ${date}\n`;
+      txt += `----------------------------------------\n`;
+      ["matin","midi","soir"].forEach(m => {
+        const note = String(voiceNotes[`${date}-${m}`] || "").trim();
+        if (note) txt += `${momentLabel[m]}: ${note}\n`;
+      });
+      txt += "\n";
+    });
+  }
+
+  downloadFile(txt, `notes_${month}.txt`, "text/plain;charset=utf-8;");
+}
+
   </script>
+<script>
+  // Met le mois courant automatiquement
+  (function(){
+    const el = document.getElementById("monthPicker");
+    if (el) el.value = new Date().toISOString().slice(0,7);
+  })();
+</script>
+
 </body>
 </html>
